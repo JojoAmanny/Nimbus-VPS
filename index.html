@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NimbusVPS — Cloud Infrastructure, Reimagined</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   THEME VARIABLES
+═══════════════════════════════════════ */
+:root {
+  --green: #39ff14;
+  --green-dim: #2bc910;
+  --green-glow: rgba(57,255,20,0.18);
+  --green-glow-strong: rgba(57,255,20,0.35);
+  --radius: 6px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --font-head: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* DARK THEME (default) */
+[data-theme="dark"] {
+  --bg: #0a0f0a;
+  --bg2: #0e140e;
+  --surface: #111811;
+  --surface2: #161e16;
+  --surface3: #1c261c;
+  --border: rgba(57,255,20,0.12);
+  --border2: rgba(255,255,255,0.07);
+  --text: #f0f7f0;
+  --text2: #a8bca8;
+  --text3: #6a826a;
+  --accent: var(--green);
+  --accent-dim: var(--green-dim);
+  --accent-glow: var(--green-glow);
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.7);
+  --glow: 0 0 30px var(--green-glow-strong);
+  --glass: rgba(14,20,14,0.7);
+  --glass-border: rgba(57,255,20,0.15);
+  --nav-bg: rgba(10,15,10,0.9);
+  --card-bg: linear-gradient(135deg, #111811 0%, #0e170e 100%);
+  --hero-grad: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(57,255,20,0.08) 0%, transparent 70%);
+  --danger: #ff4444;
+  --danger-light: rgba(255,68,68,0.12);
+  --warning: #ffaa00;
+  --warning-light: rgba(255,170,0,0.12);
+  --info: #00aaff;
+  --info-light: rgba(0,170,255,0.12);
+}
+
+/* LIGHT THEME */
+[data-theme="light"] {
+  --bg: #f4f9f4;
+  --bg2: #edf5ed;
+  --surface: #ffffff;
+  --surface2: #f8fdf8;
+  --surface3: #edf5ed;
+  --border: rgba(0,120,0,0.15);
+  --border2: rgba(0,0,0,0.08);
+  --text: #0d1f0d;
+  --text2: #3a5a3a;
+  --text3: #6a8a6a;
+  --accent: #1a7a1a;
+  --accent-dim: #155a15;
+  --accent-glow: rgba(26,122,26,0.15);
+  --shadow: 0 2px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --glow: 0 0 20px rgba(26,122,26,0.2);
+  --glass: rgba(255,255,255,0.85);
+  --glass-border: rgba(26,122,26,0.2);
+  --nav-bg: rgba(244,249,244,0.95);
+  --card-bg: linear-gradient(135deg,#ffffff 0%,#f4fbf4 100%);
+  --hero-grad: radial-gradient(ellipse 80% 60% at 60% 40%,rgba(26,122,26,0.06) 0%,transparent 70%);
+  --danger: #cc2222;
+  --danger-light: rgba(204,34,34,0.1);
+  --warning: #cc7700;
+  --warning-light: rgba(204,119,0,0.1);
+  --info: #0066cc;
+  --info-light: rgba(0,102,204,0.1);
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  font-size:15px;
+  line-height:1.65;
+  min-height:100vh;
+  transition:background var(--transition), color var(--transition);
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:var(--font-head);line-height:1.15;}
+a{text-decoration:none;color:inherit;}
+.hidden{display:none!important;}
+.page{display:none;}
+.page.active{display:block;animation:fadeUp .35s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════ */
+.tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600;font-family:var(--font-head);}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;}
+.badge-green{background:rgba(57,255,20,0.12);color:var(--accent);border:1px solid var(--border);}
+.badge-gold{background:rgba(255,170,0,0.12);color:var(--warning);border:1px solid rgba(255,170,0,0.2);}
+.badge-red{background:var(--danger-light);color:var(--danger);border:1px solid rgba(255,68,68,0.2);}
+.badge-yellow{background:var(--warning-light);color:var(--warning);border:1px solid rgba(255,170,0,0.2);}
+.badge-blue{background:var(--info-light);color:var(--info);border:1px solid rgba(0,170,255,0.2);}
+.badge-gray{background:var(--surface3);color:var(--text2);}
+.divider{height:1px;background:var(--border);margin:24px 0;}
+.error-msg{color:var(--danger);font-size:12px;margin-top:5px;}
+label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:var(--text2);}
+.form-group{margin-bottom:18px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+input,select,textarea{
+  width:100%;padding:11px 15px;
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  background:var(--surface2);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:14px;
+  outline:none;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);
+}
+select option{background:var(--surface);}
+
+/* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 26px;border-radius:var(--radius);
+  font-family:var(--font-head);font-size:13px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  cursor:pointer;border:none;transition:var(--transition);
+  text-decoration:none;white-space:nowrap;
+}
+.btn-primary{
+  background:var(--accent);color:#030903;
+  box-shadow:0 0 20px var(--accent-glow);
+}
+.btn-primary:hover{
+  background:var(--accent-dim);
+  box-shadow:0 0 32px var(--green-glow-strong);
+  transform:translateY(-2px);
+}
+.btn-outline{
+  background:transparent;color:var(--accent);
+  border:1px solid var(--accent);
+}
+.btn-outline:hover{background:var(--accent-glow);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:var(--text2);padding:8px 16px;}
+.btn-ghost:hover{color:var(--text);background:var(--surface2);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{filter:brightness(1.15);}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-warning:hover{filter:brightness(1.1);}
+.btn-sm{padding:6px 14px;font-size:11px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:64px;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  transition:background var(--transition);
+}
+.nav-brand{
+  font-family:var(--font-head);font-size:22px;font-weight:900;
+  color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:2px;
+  cursor:pointer;
+}
+.nav-brand span{color:var(--accent);}
+.nav-brand .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--accent);margin-left:2px;margin-bottom:10px;
+  box-shadow:0 0 8px var(--accent);animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-link{
+  font-size:13px;font-weight:500;color:var(--text2);
+  padding:7px 14px;border-radius:var(--radius);
+  transition:var(--transition);cursor:pointer;
+}
+.nav-link:hover,.nav-link.active{color:var(--accent);background:var(--accent-glow);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+
+/* THEME TOGGLE */
+.theme-toggle{
+  display:flex;align-items:center;gap:2px;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:22px;padding:3px;
+}
+.theme-btn{
+  width:32px;height:26px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;cursor:pointer;border:none;
+  background:transparent;color:var(--text3);
+  transition:var(--transition);
+}
+.theme-btn.active{background:var(--accent);color:#030903;}
+.theme-btn:hover:not(.active){color:var(--text);background:var(--surface3);}
+
+/* USER MENU */
+.nav-user-wrap{position:relative;}
+.avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dim) 100%);
+  color:#030903;display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;cursor:pointer;
+  border:2px solid var(--border);
+  box-shadow:0 0 12px var(--accent-glow);
+}
+.dropdown-menu{
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);
+  min-width:200px;overflow:hidden;z-index:300;
+  animation:fadeUp .18s ease;
+}
+.dropdown-item{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;font-size:13px;cursor:pointer;
+  color:var(--text2);transition:var(--transition);
+}
+.dropdown-item:hover{background:var(--surface2);color:var(--text);}
+.dropdown-item.danger{color:var(--danger);}
+.dropdown-item.danger:hover{background:var(--danger-light);}
+.dropdown-sep{height:1px;background:var(--border);}
+
+/* ═══════════════════════════════════════
+   PAGE WRAPPER
+═══════════════════════════════════════ */
+.page-body{padding-top:64px;}
+
+/* ═══════════════════════════════════════
+   HERO SECTION
+═══════════════════════════════════════ */
+.hero{
+  min-height:calc(100vh - 64px);
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:60px;
+  padding:80px 80px 60px;
+  max-width:1400px;margin:0 auto;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:var(--hero-grad);pointer-events:none;
+}
+/* Animated grid background */
+.hero-grid{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse at center,black 20%,transparent 80%);
+  opacity:.4;
+}
+.hero-left{z-index:1;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--accent-glow);border:1px solid var(--border);
+  border-radius:20px;padding:5px 14px;
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:28px;
+}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
+.hero h1{
+  font-size:clamp(42px,6vw,76px);font-weight:900;
+  letter-spacing:-.04em;margin-bottom:24px;
+  line-height:1.05;
+}
+.hero h1 .line2{color:var(--accent);display:block;text-shadow:0 0 40px var(--green-glow-strong);}
+.hero-sub{font-size:16px;color:var(--text2);max-width:440px;margin-bottom:40px;line-height:1.75;}
+.hero-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:56px;}
+.hero-stats{
+  display:flex;gap:36px;
+  padding:20px 0;
+  border-top:1px solid var(--border);
+}
+.stat{display:flex;flex-direction:column;}
+.stat-val{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--text);}
+.stat-label{font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-top:2px;}
+.hero-right{
+  display:flex;align-items:center;justify-content:center;
+  position:relative;z-index:1;
+}
+/* 3D-style server illustration */
+.hero-visual{
+  width:100%;max-width:480px;
+  aspect-ratio:1;
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.hero-orb{
+  width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(57,255,20,0.22),rgba(57,255,20,0.04) 60%,transparent 80%);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 80px rgba(57,255,20,0.08),inset 0 0 60px rgba(57,255,20,0.04);
+  animation:orbFloat 6s ease-in-out infinite;
+  position:relative;
+}
+@keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.hero-orb::before{
+  content:'';position:absolute;inset:-20px;border-radius:50%;
+  border:1px dashed var(--border);animation:spin 20s linear infinite;
+}
+.hero-orb::after{
+  content:'';position:absolute;inset:-40px;border-radius:50%;
+  border:1px dashed rgba(57,255,20,0.06);animation:spin 35s linear infinite reverse;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.server-icon{font-size:96px;filter:drop-shadow(0 0 20px var(--accent));}
+.orbit-dot{
+  position:absolute;width:10px;height:10px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 12px var(--accent);
+}
+.orbit-dot:nth-child(2){top:10%;left:50%;animation:orbit1 4s linear infinite;}
+.orbit-dot:nth-child(3){top:50%;right:5%;animation:orbit2 5s linear infinite;}
+.orbit-dot:nth-child(4){bottom:10%;left:20%;animation:orbit3 6s linear infinite;}
+@keyframes orbit1{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,15px)}}
+@keyframes orbit2{0%,100%{transform:translate(0,0)}50%{transform:translate(-12px,8px)}}
+@keyframes orbit3{0%,100%{transform:translate(0,0)}50%{transform:translate(8px,-12px)}}
+
+/* ═══════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════ */
+.section{padding:100px 80px;max-width:1400px;margin:0 auto;}
+.section-sm{padding:60px 80px;max-width:1400px;margin:0 auto;}
+.section-head{text-align:center;margin-bottom:64px;}
+.section-head .tag{display:block;margin-bottom:12px;}
+.section-head h2{font-size:clamp(32px,4vw,52px);font-weight:900;letter-spacing:-.03em;margin-bottom:16px;}
+.section-head p{font-size:16px;color:var(--text2);max-width:500px;margin:0 auto;}
+
+/* Full-width section backgrounds */
+.section-wrap{background:var(--bg2);}
+.section-wrap2{
+  background:var(--bg);
+  position:relative;overflow:hidden;
+}
+.section-wrap2::before{
+  content:'';position:absolute;left:-200px;top:50%;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,var(--green-glow) 0%,transparent 70%);
+  transform:translateY(-50%);pointer-events:none;
+}
+
+/* ═══════════════════════════════════════
+   PLAN CARDS
+═══════════════════════════════════════ */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:start;}
+.plan-card{
+  background:var(--card-bg);
+  border:1px solid var(--border2);
+  border-radius:var(--radius-xl);
+  padding:36px 30px;
+  position:relative;
+  transition:transform var(--transition),box-shadow var(--transition),border-color var(--transition);
+  overflow:hidden;
+}
+.plan-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--accent-glow) 0%,transparent 50%);
+  opacity:0;transition:opacity var(--transition);border-radius:var(--radius-xl);
+}
+.plan-card:hover{transform:translateY(-6px);border-color:var(--border);box-shadow:var(--glow);}
+.plan-card:hover::before{opacity:1;}
+.plan-card.featured{border-color:var(--accent);box-shadow:0 0 40px var(--green-glow);}
+.plan-featured-label{position:absolute;top:-1px;left:50%;transform:translateX(-50%);}
+.plan-chip{display:inline-block;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:#030903;box-shadow:0 0 12px var(--accent-glow);}
+.plan-name{font-family:var(--font-head);font-size:22px;font-weight:800;margin:20px 0 6px;}
+.plan-desc{font-size:13px;color:var(--text2);margin-bottom:24px;}
+.plan-price-wrap{margin-bottom:8px;}
+.plan-price{display:flex;align-items:baseline;gap:4px;}
+.plan-price-val{font-family:var(--font-head);font-size:52px;font-weight:900;color:var(--text);}
+.plan-price-period{font-size:14px;color:var(--text2);}
+.plan-billing{font-size:12px;color:var(--text3);margin-bottom:28px;}
+.plan-divider{height:1px;background:var(--border);margin:20px 0;}
+.plan-spec{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:10px;}
+.plan-spec-label{color:var(--text2);}
+.plan-spec-val{font-weight:600;color:var(--text);}
+.plan-features{list-style:none;margin-bottom:30px;display:flex;flex-direction:column;gap:10px;}
+.plan-features li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2);}
+.plan-features li .chk{color:var(--accent);font-size:12px;font-weight:700;}
+.plan-features li.off{color:var(--text3);}
+.plan-features li.off .chk{color:var(--text3);}
+
+/* ═══════════════════════════════════════
+   FEATURE CARDS
+═══════════════════════════════════════ */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.feature-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:32px 28px;
+  transition:transform var(--transition),border-color var(--transition);
+}
+.feature-card:hover{transform:translateY(-4px);border-color:var(--border);}
+.feature-icon{
+  width:52px;height:52px;border-radius:var(--radius);
+  background:var(--accent-glow);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:20px;
+}
+.feature-title{font-family:var(--font-head);font-size:17px;font-weight:700;margin-bottom:10px;}
+.feature-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+
+/* ═══════════════════════════════════════
+   ABOUT PAGE
+═══════════════════════════════════════ */
+.about-hero{
+  min-height:50vh;display:flex;align-items:center;
+  padding:120px 80px 80px;
+  max-width:1400px;margin:0 auto;
+  position:relative;
+  text-align:center;
+}
+.about-hero-inner{width:100%;}
+.about-hero h1{font-size:clamp(48px,7vw,88px);font-weight:900;letter-spacing:-.04em;margin-bottom:24px;}
+.about-hero h1 em{color:var(--accent);font-style:normal;}
+.about-hero p{font-size:18px;color:var(--text2);max-width:640px;margin:0 auto;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.about-text h2{font-size:38px;font-weight:900;letter-spacing:-.03em;margin-bottom:20px;}
+.about-text h2 span{color:var(--accent);}
+.about-text p{color:var(--text2);font-size:15px;margin-bottom:16px;line-height:1.8;}
+.about-visual{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-xl);padding:40px;
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+}
+.about-stat{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:24px 20px;text-align:center;
+}
+.about-stat-val{font-family:var(--font-head);font-size:36px;font-weight:900;color:var(--accent);margin-bottom:4px;}
+.about-stat-label{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.team-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:28px 20px;text-align:center;
+  transition:transform var(--transition),border-color var(--transition);
+}
+.team-card:hover{transform:translateY(-4px);border-color:var(--border);}
+.team-avatar{
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dim) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;color:#030903;
+  margin:0 auto 14px;
+  box-shadow:0 0 20px var(--accent-glow);
+}
+.team-name{font-family:var(--font-head);font-size:15px;font-weight:700;margin-bottom:4px;}
+.team-role{font-size:12px;color:var(--text2);}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.value-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:28px;
+  border-left:3px solid var(--accent);
+}
+.value-title{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:10px;color:var(--accent);}
+.value-desc{font-size:13px;color:var(--text2);line-height:1.7;}
+
+/* ═══════════════════════════════════════
+   FAQ PAGE
+═══════════════════════════════════════ */
+.faq-hero{
+  padding:120px 80px 60px;max-width:1400px;margin:0 auto;text-align:center;
+}
+.faq-hero h1{font-size:clamp(40px,6vw,72px);font-weight:900;letter-spacing:-.04em;margin-bottom:16px;}
+.faq-hero h1 span{color:var(--accent);}
+.faq-hero p{font-size:16px;color:var(--text2);max-width:500px;margin:0 auto 48px;}
+.faq-search{position:relative;max-width:480px;margin:0 auto;}
+.faq-search input{padding:14px 20px 14px 48px;border-radius:30px;font-size:15px;border:1px solid var(--border);background:var(--surface);}
+.faq-search::before{content:'🔍';position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:16px;}
+.faq-cats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:48px;}
+.faq-cat{
+  padding:8px 20px;border-radius:24px;font-size:13px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text2);transition:var(--transition);
+}
+.faq-cat.active,.faq-cat:hover{background:var(--accent);color:#030903;border-color:var(--accent);box-shadow:0 0 16px var(--accent-glow);}
+.faq-grid{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.faq-item{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:border-color var(--transition);
+}
+.faq-item:hover,.faq-item.open{border-color:var(--border);}
+.faq-question{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 24px;cursor:pointer;font-weight:600;font-size:15px;
+  transition:color var(--transition);
+}
+.faq-question:hover{color:var(--accent);}
+.faq-item.open .faq-question{color:var(--accent);}
+.faq-chevron{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--surface2);display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;transition:transform var(--transition),background var(--transition);
+}
+.faq-item.open .faq-chevron{transform:rotate(180deg);background:var(--accent-glow);}
+.faq-answer{
+  max-height:0;overflow:hidden;
+  transition:max-height .3s ease,padding .3s ease;
+}
+.faq-item.open .faq-answer{max-height:400px;}
+.faq-answer-inner{
+  padding:0 24px 20px;font-size:14px;color:var(--text2);line-height:1.75;
+  border-top:1px solid var(--border);padding-top:16px;
+}
+
+/* ═══════════════════════════════════════
+   DASHBOARD LAYOUT
+═══════════════════════════════════════ */
+.dash-layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 64px);}
+.sidebar{
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:24px 0;display:flex;flex-direction:column;
+  position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;
+}
+.sidebar-brand{
+  padding:0 20px 20px;border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+.sidebar-user-name{font-weight:600;font-size:14px;color:var(--text);}
+.sidebar-user-role{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.sidebar-label{
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text3);padding:0 20px;margin:16px 0 4px;font-weight:600;
+}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;font-size:13px;color:var(--text2);
+  cursor:pointer;transition:var(--transition);
+  border-left:2px solid transparent;font-weight:500;
+}
+.sidebar-item:hover{color:var(--text);background:var(--surface2);}
+.sidebar-item.active{color:var(--accent);background:var(--accent-glow);border-left-color:var(--accent);}
+.sidebar-icon{width:20px;text-align:center;font-size:15px;flex-shrink:0;}
+.dash-content{padding:36px 40px;background:var(--bg);overflow-y:auto;}
+.dash-header{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;}
+.dash-header-text h2{font-size:28px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px;}
+.dash-header-text p{color:var(--text2);font-size:13px;}
+
+/* METRIC CARDS */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+.metrics-grid-4{grid-template-columns:repeat(4,1fr);}
+.metric-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:22px 24px;
+  position:relative;overflow:hidden;
+}
+.metric-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+  opacity:0;transition:opacity var(--transition);
+}
+.metric-card:hover::after{opacity:1;}
+.metric-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px;font-weight:600;}
+.metric-val{font-family:var(--font-head);font-size:30px;font-weight:900;color:var(--text);}
+.metric-change{font-size:12px;color:var(--accent);margin-top:4px;font-weight:500;}
+.metric-change.red{color:var(--danger);}
+
+/* TABLES */
+.table-wrap{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;}
+.table{width:100%;border-collapse:collapse;}
+.table th{
+  text-align:left;padding:12px 18px;
+  font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--text3);font-weight:600;
+  border-bottom:1px solid var(--border);background:var(--surface2);
+}
+.table td{padding:13px 18px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.table tr:last-child td{border-bottom:none;}
+.table tr:hover td{background:var(--surface2);}
+.table-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;flex-shrink:0;}
+.status-dot.green{background:#39ff14;box-shadow:0 0 5px #39ff14;}
+.status-dot.red{background:var(--danger);}
+.status-dot.yellow{background:var(--warning);}
+.status-dot.gray{background:var(--text3);}
+
+/* ADMIN SPECIFIC */
+.admin-subnav{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;}
+.admin-tab{padding:11px 20px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:var(--transition);font-weight:600;white-space:nowrap;}
+.admin-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.admin-tab:hover{color:var(--text);}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;}
+.card-title{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);color:var(--text);}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);}
+.toggle-row:last-child{border-bottom:none;padding-bottom:0;}
+.toggle-row-label{font-weight:600;font-size:14px;}
+.toggle-row-desc{font-size:12px;color:var(--text3);margin-top:2px;}
+.toggle-switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;}
+.toggle-switch input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--surface3);border-radius:24px;transition:.3s;border:1px solid var(--border2);}
+.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:var(--text3);border-radius:50%;transition:.3s;}
+input:checked+.toggle-slider{background:var(--accent);border-color:var(--accent);}
+input:checked+.toggle-slider::before{transform:translateX(18px);background:#030903;}
+.perm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:12px;}
+.perm-item{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 12px;border-radius:var(--radius);background:var(--surface2);border:1px solid var(--border2);}
+.perm-item input[type=checkbox]{width:auto;cursor:pointer;accent-color:var(--accent);}
+.log-entry{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+.log-entry:last-child{border-bottom:none;}
+.log-time{color:var(--text3);font-size:11px;font-family:monospace;white-space:nowrap;margin-top:3px;flex-shrink:0;}
+.search-bar{display:flex;gap:10px;margin-bottom:16px;}
+.search-bar input{flex:1;}
+.alert{border-radius:var(--radius);padding:12px 16px;font-size:13px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-weight:500;}
+.alert-warning{background:var(--warning-light);color:var(--warning);border:1px solid rgba(255,170,0,0.25);}
+.alert-danger{background:var(--danger-light);color:var(--danger);border:1px solid rgba(255,68,68,0.25);}
+.alert-success{background:var(--accent-glow);color:var(--accent);border:1px solid var(--border);}
+.server-item{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:18px 22px;margin-bottom:10px;
+  transition:border-color var(--transition);
+}
+.server-item:hover{border-color:var(--border);}
+.server-info h4{font-size:14px;font-weight:600;margin-bottom:2px;}
+.server-info p{font-size:12px;color:var(--text2);}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);z-index:400;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  animation:fadeIn .2s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-xl);
+  width:100%;max-width:460px;
+  padding:40px;position:relative;
+  box-shadow:0 0 80px rgba(57,255,20,0.08),var(--shadow-lg);
+  animation:slideUp .25s cubic-bezier(.4,0,.2,1);
+  max-height:90vh;overflow-y:auto;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--surface2);border:none;cursor:pointer;color:var(--text2);font-size:16px;padding:6px;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{color:var(--text);background:var(--surface3);}
+.modal h2{font-size:26px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em;}
+.modal-sub{color:var(--text2);font-size:14px;margin-bottom:28px;}
+.auth-toggle{text-align:center;margin-top:20px;font-size:13px;color:var(--text2);}
+.auth-toggle a{color:var(--accent);cursor:pointer;font-weight:600;}
+.auth-toggle a:hover{text-decoration:underline;}
+
+/* CHECKOUT */
+.checkout-plan-summary{
+  background:var(--surface2);border-radius:var(--radius-lg);
+  padding:20px;margin-bottom:24px;border:1px solid var(--border);
+}
+.checkout-plan-name{font-family:var(--font-head);font-size:20px;font-weight:800;margin-bottom:4px;}
+.checkout-plan-price{color:var(--accent);font-weight:600;font-size:15px;}
+.checkout-plan-specs{margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;}
+.checkout-plan-spec{font-size:12px;color:var(--text2);}
+.card-input-group{position:relative;}
+.card-input-group input{padding-right:44px;}
+.card-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text3);}
+.order-total{
+  background:var(--accent-glow);border-radius:var(--radius);
+  padding:16px 20px;margin:20px 0;
+  display:flex;justify-content:space-between;align-items:center;
+  border:1px solid var(--border);
+}
+.order-total-label{font-size:14px;font-weight:600;}
+.order-total-val{font-family:var(--font-head);font-size:28px;font-weight:900;color:var(--accent);}
+
+/* SUCCESS */
+.success-screen{text-align:center;padding:20px;}
+.success-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--accent-glow);border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;font-size:30px;
+  box-shadow:0 0 30px var(--green-glow-strong);
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* CONFIRM */
+.confirm-modal{max-width:380px;text-align:center;}
+.confirm-modal h3{font-size:22px;font-weight:800;margin-bottom:10px;}
+.confirm-modal p{color:var(--text2);font-size:14px;margin-bottom:24px;}
+.confirm-btns{display:flex;gap:10px;justify-content:center;}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);
+  padding:60px 80px 40px;
+  background:var(--bg2);
+}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+.footer-brand{font-family:var(--font-head);font-size:22px;font-weight:900;margin-bottom:14px;}
+.footer-brand span{color:var(--accent);}
+.footer-desc{font-size:13px;color:var(--text2);line-height:1.75;max-width:260px;}
+.footer-col-title{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px;color:var(--text);}
+.footer-links{display:flex;flex-direction:column;gap:10px;}
+.footer-link{font-size:13px;color:var(--text2);cursor:pointer;transition:color var(--transition);}
+.footer-link:hover{color:var(--accent);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;border-top:1px solid var(--border);font-size:12px;color:var(--text3);}
+
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;z-index:9999;padding:14px 22px;border-radius:var(--radius-lg);font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;max-width:320px;box-shadow:var(--shadow-lg);background:var(--surface);border:1px solid var(--border);color:var(--text);}
+#toast.show{opacity:1;}
+#toast.success{border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow);}
+#toast.error{border-color:var(--danger);}
+
+/* LOADING SPINNER */
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .hero{grid-template-columns:1fr;padding:80px 40px 60px;text-align:center;}
+  .hero-right{display:none;}
+  .hero-cta{justify-content:center;}
+  .hero-stats{justify-content:center;}
+  .plans-grid,.features-grid{grid-template-columns:1fr;}
+  .about-grid,.two-col{grid-template-columns:1fr;}
+  .team-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .section,.section-sm{padding:60px 32px;}
+  .about-hero,.faq-hero{padding:100px 32px 60px;}
+  nav{padding:0 24px;}
+}
+@media(max-width:768px){
+  .dash-layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .metrics-grid,.metrics-grid-4{grid-template-columns:1fr 1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .team-grid,.values-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center;}
+}
+@media(max-width:480px){
+  .metrics-grid,.metrics-grid-4{grid-template-columns:1fr;}
+  .hero h1{font-size:38px;}
+  .modal{padding:24px 18px;}
+}
+</style>
+</head>
+<body>
+<div class="hero-grid"></div>
+
+<!-- ════════════ NAVIGATION ════════════ -->
+<nav>
+  <div class="nav-brand" onclick="showPage('home')">Nimbus<span>VPS</span><div class="dot"></div></div>
+  <div class="nav-links">
+    <div class="nav-link" onclick="showPage('home')" id="nl-home">Home</div>
+    <div class="nav-link" onclick="goPricing()" id="nl-pricing">Pricing</div>
+    <div class="nav-link" onclick="showPage('about')" id="nl-about">About</div>
+    <div class="nav-link" onclick="showPage('faq')" id="nl-faq">FAQ</div>
+  </div>
+  <div class="nav-right">
+    <!-- Theme toggle -->
+    <div class="theme-toggle" title="Switch theme">
+      <button class="theme-btn" id="tb-dark"   onclick="setTheme('dark')"   title="Dark">🌙</button>
+      <button class="theme-btn" id="tb-system" onclick="setTheme('system')" title="System">💻</button>
+      <button class="theme-btn" id="tb-light"  onclick="setTheme('light')"  title="Light">☀️</button>
+    </div>
+    <!-- Guest -->
+    <div id="navGuest" style="display:flex;align-items:center;gap:8px">
+      <button class="btn btn-ghost" onclick="openModal('login')">Sign in</button>
+      <button class="btn btn-primary" onclick="openModal('register')">Get started →</button>
+    </div>
+    <!-- Auth -->
+    <div id="navAuth" class="hidden nav-user-wrap">
+      <span style="font-size:13px;color:var(--text2)" id="navUserName"></span>
+      <div class="avatar" id="navAvatar" onclick="toggleUserMenu()">U</div>
+      <div id="userMenu" class="dropdown-menu hidden">
+        <div class="dropdown-item" onclick="showPage('dashboard');closeMenus()">📊 Dashboard</div>
+        <div class="dropdown-item hidden" id="adminMenuItem" onclick="goAdmin()">⚙️ Admin Panel</div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item danger" onclick="logout()">🚪 Sign out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════
+     HOME PAGE
+════════════════════════════════════ -->
+<div id="page-home" class="page active page-body">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Next-gen cloud infrastructure</div>
+      <h1>
+        Empowering<br>
+        <span class="line2">People with<br>Cloud Power</span>
+      </h1>
+      <p class="hero-sub">Deploy enterprise-grade VPS servers in seconds. Lightning-fast NVMe storage, global data centres, and a control panel so clean it feels like cheating.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="goPricing()">Deploy now →</button>
+        <button class="btn btn-outline" onclick="showPage('about')">Learn more</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-val">99.9%</span><span class="stat-label">Uptime SLA</span></div>
+        <div class="stat"><span class="stat-val">12</span><span class="stat-label">Data Centres</span></div>
+        <div class="stat"><span class="stat-val">&lt;2ms</span><span class="stat-label">Avg Latency</span></div>
+        <div class="stat"><span class="stat-val">40k+</span><span class="stat-label">Servers Live</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hero-orb">
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <span class="server-icon">🖥️</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div class="section-wrap">
+    <div class="section">
+      <div class="section-head">
+        <span class="tag">Why NimbusVPS</span>
+        <h2>Infrastructure that<br>doesn't hold you back</h2>
+        <p>Everything you need to build, scale, and ship with confidence.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">NVMe Speed</div>
+          <div class="feature-desc">Pure NVMe SSD storage delivering up to 3× the IOPS of standard SSDs. Your apps load instantly, databases fly.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-title">DDoS Protection</div>
+          <div class="feature-desc">Enterprise-grade DDoS mitigation included on every plan. Up to 1Tbps of protection, automatically and invisibly.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <div class="feature-title">Global Network</div>
+          <div class="feature-desc">12 data centres across 4 continents. Deploy close to your users and serve them with sub-2ms latency worldwide.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <div class="feature-title">Auto Backups</div>
+          <div class="feature-desc">Daily automated backups retained for 7 days. One-click restore means you sleep well knowing your data is safe.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Real-time Monitoring</div>
+          <div class="feature-desc">CPU, RAM, disk, and network graphs updated every 5 seconds. Know exactly what your server is doing, always.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔧</div>
+          <div class="feature-title">Full Root Access</div>
+          <div class="feature-desc">Complete control over your environment. Install anything, configure everything. It's your server, your rules.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div id="pricing" class="section-wrap2">
+    <div class="section">
+      <div class="section-head">
+        <span class="tag">Transparent pricing</span>
+        <h2>Choose your plan</h2>
+        <p>No hidden fees. No long-term contracts. Cancel anytime.</p>
+      </div>
+      <div class="plans-grid">
+
+        <!-- STARTER -->
+        <div class="plan-card">
+          <div class="plan-name">Starter</div>
+          <div class="plan-desc">Perfect for side projects and development environments.</div>
+          <div class="plan-divider"></div>
+          <div class="plan-spec"><span class="plan-spec-label">vCPU</span><span class="plan-spec-val">1 Core</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">RAM</span><span class="plan-spec-val">1 GB</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">Storage</span><span class="plan-spec-val">25 GB NVMe</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">Bandwidth</span><span class="plan-spec-val">1 TB</span></div>
+          <div class="plan-divider"></div>
+          <div class="plan-price"><span class="plan-price-val">$5</span><span class="plan-price-period">/mo</span></div>
+          <div class="plan-billing">Billed monthly · Cancel anytime</div>
+          <ul class="plan-features">
+            <li><span class="chk">✓</span>1 IPv4 address</li>
+            <li><span class="chk">✓</span>Full root access</li>
+            <li><span class="chk">✓</span>Automated backups</li>
+            <li><span class="chk">✓</span>DDoS protection</li>
+            <li class="off"><span class="chk">✗</span>Dedicated IP</li>
+            <li class="off"><span class="chk">✗</span>Priority support</li>
+          </ul>
+          <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="selectPlan('Starter',5,1,'1 GB','25 GB NVMe','1 TB')">Select Starter</button>
+        </div>
+
+        <!-- PROFESSIONAL -->
+        <div class="plan-card featured">
+          <div class="plan-featured-label"><span class="plan-chip">Most Popular</span></div>
+          <div class="plan-name">Professional</div>
+          <div class="plan-desc">For growing applications that need serious performance.</div>
+          <div class="plan-divider"></div>
+          <div class="plan-spec"><span class="plan-spec-label">vCPU</span><span class="plan-spec-val">4 Cores</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">RAM</span><span class="plan-spec-val">8 GB</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">Storage</span><span class="plan-spec-val">160 GB NVMe</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">Bandwidth</span><span class="plan-spec-val">5 TB</span></div>
+          <div class="plan-divider"></div>
+          <div class="plan-price"><span class="plan-price-val">$28</span><span class="plan-price-period">/mo</span></div>
+          <div class="plan-billing">Billed monthly · Cancel anytime</div>
+          <ul class="plan-features">
+            <li><span class="chk">✓</span>2 IPv4 addresses</li>
+            <li><span class="chk">✓</span>Full root access</li>
+            <li><span class="chk">✓</span>Automated backups</li>
+            <li><span class="chk">✓</span>DDoS protection</li>
+            <li><span class="chk">✓</span>Dedicated IP</li>
+            <li class="off"><span class="chk">✗</span>Priority support</li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="selectPlan('Professional',28,4,'8 GB','160 GB NVMe','5 TB')">Select Professional</button>
+        </div>
+
+        <!-- ENTERPRISE -->
+        <div class="plan-card">
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-desc">High-performance infrastructure for demanding production workloads.</div>
+          <div class="plan-divider"></div>
+          <div class="plan-spec"><span class="plan-spec-label">vCPU</span><span class="plan-spec-val">16 Cores</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">RAM</span><span class="plan-spec-val">32 GB</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">Storage</span><span class="plan-spec-val">640 GB NVMe</span></div>
+          <div class="plan-spec"><span class="plan-spec-label">Bandwidth</span><span class="plan-spec-val">20 TB</span></div>
+          <div class="plan-divider"></div>
+          <div class="plan-price"><span class="plan-price-val">$96</span><span class="plan-price-period">/mo</span></div>
+          <div class="plan-billing">Billed monthly · Cancel anytime</div>
+          <ul class="plan-features">
+            <li><span class="chk">✓</span>5 IPv4 addresses</li>
+            <li><span class="chk">✓</span>Full root access</li>
+            <li><span class="chk">✓</span>Automated backups</li>
+            <li><span class="chk">✓</span>DDoS protection</li>
+            <li><span class="chk">✓</span>Dedicated IP</li>
+            <li><span class="chk">✓</span>Priority support</li>
+          </ul>
+          <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="selectPlan('Enterprise',96,16,'32 GB','640 GB NVMe','20 TB')">Select Enterprise</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Nimbus<span>VPS</span></div>
+        <p class="footer-desc">Enterprise-grade cloud infrastructure, made accessible. Built for developers who demand reliability and performance.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <span class="footer-link" onclick="goPricing()">Pricing</span>
+          <span class="footer-link" onclick="showPage('faq')">FAQ</span>
+          <span class="footer-link">Status</span>
+          <span class="footer-link">Changelog</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <span class="footer-link" onclick="showPage('about')">About Us</span>
+          <span class="footer-link">Blog</span>
+          <span class="footer-link">Careers</span>
+          <span class="footer-link">Contact</span>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <span class="footer-link">Privacy Policy</span>
+          <span class="footer-link">Terms of Service</span>
+          <span class="footer-link">Cookie Policy</span>
+          <span class="footer-link">GDPR</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NimbusVPS · All rights reserved.</span>
+      <span>Made with ⚡ for developers worldwide</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════
+     ABOUT PAGE
+════════════════════════════════════ -->
+<div id="page-about" class="page page-body">
+  <div class="about-hero">
+    <div class="about-hero-inner">
+      <div class="hero-eyebrow" style="justify-content:center;display:inline-flex">Our story</div>
+      <h1 style="margin-top:16px">Built for <em>developers</em>,<br>by developers</h1>
+      <p style="font-size:17px;color:var(--text2);max-width:560px;margin:20px auto 0;line-height:1.8">We started NimbusVPS because we were tired of overpriced, overcomplicated cloud infrastructure that required a PhD to configure. So we built something better.</p>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section">
+      <div class="about-grid">
+        <div class="about-text">
+          <span class="tag">Who we are</span>
+          <h2 style="margin-top:12px">Cloud infrastructure <span>reimagined</span></h2>
+          <p>Founded in 2021, NimbusVPS has grown from a small passion project into a trusted infrastructure provider serving over 40,000 servers worldwide. We believe that powerful cloud computing should be accessible to everyone — from indie hackers to enterprise teams.</p>
+          <p>Our mission is simple: deliver the most reliable, performant, and affordable VPS hosting on the planet, wrapped in an experience so clean and intuitive that deploying a server feels like magic.</p>
+          <p>Every decision we make — from the hardware we choose to the UI we design — is driven by one question: <em>would a developer love this?</em></p>
+          <button class="btn btn-primary" style="margin-top:8px" onclick="goPricing()">Start building today</button>
+        </div>
+        <div class="about-visual">
+          <div class="about-stat"><div class="about-stat-val">40k+</div><div class="about-stat-label">Servers deployed</div></div>
+          <div class="about-stat"><div class="about-stat-val">99.9%</div><div class="about-stat-label">Uptime SLA</div></div>
+          <div class="about-stat"><div class="about-stat-val">12</div><div class="about-stat-label">Data centres</div></div>
+          <div class="about-stat"><div class="about-stat-val">2021</div><div class="about-stat-label">Founded</div></div>
+          <div class="about-stat" style="grid-column:span 2"><div class="about-stat-val">150+</div><div class="about-stat-label">Countries served</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="tag">Our values</span>
+      <h2>What we stand for</h2>
+      <p>The principles that guide every decision we make.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-title">⚡ Performance First</div>
+        <div class="value-desc">We obsess over every millisecond. From hardware selection to network routing, performance is never an afterthought — it's our foundation.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title">🔒 Relentless Reliability</div>
+        <div class="value-desc">Downtime costs money and trust. We engineer for 99.9% uptime, maintain N+1 redundancy across all systems, and monitor 24/7.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title">💚 Developer Experience</div>
+        <div class="value-desc">Good infrastructure should get out of your way. We design every feature, every API, every dashboard screen to delight the developer using it.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title">💰 Transparent Pricing</div>
+        <div class="value-desc">No surprise bills. No confusing tiers. No asterisks hiding fees. What you see on our pricing page is exactly what you pay.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title">🌱 Sustainability</div>
+        <div class="value-desc">We power our data centres with 100% renewable energy and are committed to carbon-neutral operations across our entire infrastructure.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title">🤝 Community</div>
+        <div class="value-desc">We give back to the open-source projects we depend on. We sponsor developers, contribute code, and support the ecosystem that made us possible.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section">
+      <div class="section-head">
+        <span class="tag">The team</span>
+        <h2>Meet the people behind NimbusVPS</h2>
+        <p>A small, focused team with a big vision for what cloud infrastructure can be.</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">AJ</div>
+          <div class="team-name">Alex Johnson</div>
+          <div class="team-role">Co-founder & CEO</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">SM</div>
+          <div class="team-name">Sarah Martinez</div>
+          <div class="team-role">Co-founder & CTO</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">DK</div>
+          <div class="team-name">Daniel Kim</div>
+          <div class="team-role">Head of Infrastructure</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">PC</div>
+          <div class="team-name">Priya Chen</div>
+          <div class="team-role">Head of Product</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Nimbus<span>VPS</span></div>
+        <p class="footer-desc">Enterprise-grade cloud infrastructure, made accessible.</p>
+      </div>
+      <div><div class="footer-col-title">Product</div><div class="footer-links"><span class="footer-link" onclick="goPricing()">Pricing</span><span class="footer-link" onclick="showPage('faq')">FAQ</span></div></div>
+      <div><div class="footer-col-title">Company</div><div class="footer-links"><span class="footer-link" onclick="showPage('about')">About Us</span><span class="footer-link">Blog</span></div></div>
+      <div><div class="footer-col-title">Legal</div><div class="footer-links"><span class="footer-link">Privacy</span><span class="footer-link">Terms</span></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 NimbusVPS</span><span>Made with ⚡ for developers</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════
+     FAQ PAGE
+════════════════════════════════════ -->
+<div id="page-faq" class="page page-body">
+  <div class="faq-hero">
+    <div class="hero-eyebrow" style="display:inline-flex;justify-content:center">Help Centre</div>
+    <h1 style="margin-top:16px">Frequently Asked <span>Questions</span></h1>
+    <p>Everything you need to know about NimbusVPS. Can't find an answer? Our support team is here 24/7.</p>
+    <div class="faq-search">
+      <input type="text" placeholder="Search questions…" oninput="filterFAQ(this.value)">
+    </div>
+  </div>
+
+  <div style="max-width:900px;margin:0 auto;padding:0 32px 100px">
+    <div class="faq-cats">
+      <div class="faq-cat active" onclick="filterFAQCat('all',this)">All</div>
+      <div class="faq-cat" onclick="filterFAQCat('billing',this)">Billing</div>
+      <div class="faq-cat" onclick="filterFAQCat('servers',this)">Servers</div>
+      <div class="faq-cat" onclick="filterFAQCat('security',this)">Security</div>
+      <div class="faq-cat" onclick="filterFAQCat('technical',this)">Technical</div>
+      <div class="faq-cat" onclick="filterFAQCat('account',this)">Account</div>
+    </div>
+
+    <div class="faq-grid" id="faqGrid">
+      <!-- FAQs rendered by JS -->
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand">Nimbus<span>VPS</span></div><p class="footer-desc">Enterprise-grade cloud infrastructure, made accessible.</p></div>
+      <div><div class="footer-col-title">Product</div><div class="footer-links"><span class="footer-link" onclick="goPricing()">Pricing</span><span class="footer-link" onclick="showPage('faq')">FAQ</span></div></div>
+      <div><div class="footer-col-title">Company</div><div class="footer-links"><span class="footer-link" onclick="showPage('about')">About Us</span></div></div>
+      <div><div class="footer-col-title">Legal</div><div class="footer-links"><span class="footer-link">Privacy</span><span class="footer-link">Terms</span></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 NimbusVPS</span><span>Made with ⚡ for developers</span></div>
+  </footer>
+</div>
+
+<!-- ════════════════════════════════════
+     USER DASHBOARD
+════════════════════════════════════ -->
+<div id="page-dashboard" class="page page-body">
+  <div class="dash-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-user-name" id="sidebarUser">User</div>
+        <div class="sidebar-user-role" id="sidebarRole">Member</div>
+        <!-- Theme toggle in sidebar -->
+        <div class="theme-toggle" style="margin-top:14px;justify-content:flex-start">
+          <button class="theme-btn" id="stb-dark"   onclick="setTheme('dark')">🌙</button>
+          <button class="theme-btn" id="stb-system" onclick="setTheme('system')">💻</button>
+          <button class="theme-btn" id="stb-light"  onclick="setTheme('light')">☀️</button>
+        </div>
+      </div>
+      <div class="sidebar-label">Account</div>
+      <div class="sidebar-item active" id="dsi-overview" onclick="showDashTab('overview',this)"><span class="sidebar-icon">📊</span>Overview</div>
+      <div class="sidebar-item" id="dsi-servers"  onclick="showDashTab('servers',this)"><span class="sidebar-icon">🖥️</span>My Servers</div>
+      <div class="sidebar-item" id="dsi-billing"  onclick="showDashTab('billing',this)"><span class="sidebar-icon">💳</span>Billing</div>
+      <div class="sidebar-label">Help</div>
+      <div class="sidebar-item" onclick="showPage('faq')"><span class="sidebar-icon">❓</span>FAQ</div>
+      <div class="sidebar-item"><span class="sidebar-icon">🎧</span>Support</div>
+      <div class="sidebar-label">Site</div>
+      <div class="sidebar-item" onclick="showPage('home')"><span class="sidebar-icon">🏠</span>Back to site</div>
+    </aside>
+    <main class="dash-content">
+      <!-- OVERVIEW -->
+      <div id="dash-overview">
+        <div class="dash-header">
+          <div class="dash-header-text"><h2>Good day, <span id="dashGreetName">User</span> 👋</h2><p>Here's your infrastructure at a glance.</p></div>
+          <button class="btn btn-primary" onclick="goPricing()">+ Deploy server</button>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Active Servers</div><div class="metric-val" id="metricServers">0</div><div class="metric-change">All running</div></div>
+          <div class="metric-card"><div class="metric-label">Monthly Spend</div><div class="metric-val" id="metricSpend">$0</div><div class="metric-change">This cycle</div></div>
+          <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-val">99.9%</div><div class="metric-change">Last 30 days</div></div>
+        </div>
+        <div style="font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:14px">Recent Activity</div>
+        <div class="table-wrap">
+          <table class="table"><thead><tr><th>Event</th><th>Plan</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="activityTable"><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:32px">No activity yet. Purchase a plan to get started.</td></tr></tbody></table>
+        </div>
+      </div>
+      <!-- SERVERS -->
+      <div id="dash-servers" class="hidden">
+        <div class="dash-header">
+          <div class="dash-header-text"><h2>My Servers</h2><p>Manage your VPS instances.</p></div>
+          <button class="btn btn-primary" onclick="goPricing()">+ Deploy new</button>
+        </div>
+        <div id="serversList"></div>
+      </div>
+      <!-- BILLING -->
+      <div id="dash-billing" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>Billing</h2><p>Invoices and subscription management.</p></div></div>
+        <div class="table-wrap">
+          <table class="table"><thead><tr><th>Invoice ID</th><th>Plan</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="invoiceTable"><tr><td colspan="5" style="text-align:center;color:var(--text3);padding:32px">No invoices yet.</td></tr></tbody></table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     ADMIN PANEL
+════════════════════════════════════ -->
+<div id="page-admin" class="page page-body">
+  <div class="dash-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Admin Panel</div>
+        <span class="badge badge-gold">Administrator</span>
+        <div class="theme-toggle" style="margin-top:14px;justify-content:flex-start">
+          <button class="theme-btn" id="atb-dark"   onclick="setTheme('dark')">🌙</button>
+          <button class="theme-btn" id="atb-system" onclick="setTheme('system')">💻</button>
+          <button class="theme-btn" id="atb-light"  onclick="setTheme('light')">☀️</button>
+        </div>
+      </div>
+      <div class="sidebar-label">Core Privileges</div>
+      <div class="sidebar-item active" id="asi-users"    onclick="showAdminSection('users',this)"><span class="sidebar-icon">👥</span>User Management</div>
+      <div class="sidebar-item"        id="asi-access"   onclick="showAdminSection('access',this)"><span class="sidebar-icon">🔑</span>Access Control</div>
+      <div class="sidebar-item"        id="asi-content"  onclick="showAdminSection('content',this)"><span class="sidebar-icon">📄</span>Content Moderation</div>
+      <div class="sidebar-label">System</div>
+      <div class="sidebar-item"        id="asi-config"   onclick="showAdminSection('config',this)"><span class="sidebar-icon">⚙️</span>System Config</div>
+      <div class="sidebar-item"        id="asi-reports"  onclick="showAdminSection('reports',this)"><span class="sidebar-icon">📊</span>Data & Reports</div>
+      <div class="sidebar-item"        id="asi-security" onclick="showAdminSection('security',this)"><span class="sidebar-icon">🛡️</span>Security Control</div>
+      <div class="sidebar-item"        id="asi-billing"  onclick="showAdminSection('billing',this)"><span class="sidebar-icon">💳</span>Billing & Plans</div>
+      <div class="sidebar-label">Navigation</div>
+      <div class="sidebar-item" onclick="showPage('home')"><span class="sidebar-icon">←</span>Back to site</div>
+    </aside>
+    <main class="dash-content">
+
+      <!-- 1. USER MANAGEMENT -->
+      <div id="admin-users">
+        <div class="dash-header">
+          <div class="dash-header-text"><h2>User Management</h2><p>Create, edit, and manage all user accounts.</p></div>
+          <button class="btn btn-primary" onclick="openModal('createUser')">+ Create user</button>
+        </div>
+        <div class="metrics-grid metrics-grid-4">
+          <div class="metric-card"><div class="metric-label">Total Users</div><div class="metric-val" id="adm-total">0</div></div>
+          <div class="metric-card"><div class="metric-label">Active</div><div class="metric-val" id="adm-active">0</div></div>
+          <div class="metric-card"><div class="metric-label">Restricted</div><div class="metric-val" id="adm-restricted">0</div><div class="metric-change red">Needs review</div></div>
+          <div class="metric-card"><div class="metric-label">Admins</div><div class="metric-val" id="adm-admins">0</div></div>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="userSearch" placeholder="Search by name or email…" oninput="renderUsersTable()">
+          <select id="roleFilter" style="width:auto;min-width:130px" onchange="renderUsersTable()"><option value="">All roles</option><option value="admin">Admin</option><option value="moderator">Moderator</option><option value="user">User</option></select>
+          <select id="statusFilter" style="width:auto;min-width:130px" onchange="renderUsersTable()"><option value="">All statuses</option><option value="active">Active</option><option value="suspended">Suspended</option><option value="banned">Banned</option></select>
+        </div>
+        <div class="table-wrap"><table class="table"><thead><tr><th>User</th><th>Role</th><th>Status</th><th>Joined</th><th>Servers</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
+      </div>
+
+      <!-- 2. ACCESS CONTROL -->
+      <div id="admin-access" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>Access Control & Permissions</h2><p>Manage roles, feature access, and permission levels.</p></div></div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Role Permission Editor</div>
+            <div style="margin-bottom:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="badge badge-gold">Admin</span></div><div class="perm-grid"><div class="perm-item"><input type="checkbox" checked> Full platform access</div><div class="perm-item"><input type="checkbox" checked> User management</div><div class="perm-item"><input type="checkbox" checked> System config</div><div class="perm-item"><input type="checkbox" checked> Billing management</div><div class="perm-item"><input type="checkbox" checked> Security controls</div><div class="perm-item"><input type="checkbox" checked> Data export</div></div></div>
+            <div style="margin-bottom:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="badge badge-blue">Moderator</span></div><div class="perm-grid"><div class="perm-item"><input type="checkbox" checked> View all users</div><div class="perm-item"><input type="checkbox" checked> Moderate content</div><div class="perm-item"><input type="checkbox" checked> Approve submissions</div><div class="perm-item"><input type="checkbox" checked> View reports</div><div class="perm-item"><input type="checkbox"> Edit users</div><div class="perm-item"><input type="checkbox"> System config</div></div></div>
+            <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span class="badge badge-green">User</span></div><div class="perm-grid"><div class="perm-item"><input type="checkbox" checked> Deploy servers</div><div class="perm-item"><input type="checkbox" checked> Manage billing</div><div class="perm-item"><input type="checkbox" checked> View dashboard</div><div class="perm-item"><input type="checkbox" checked> Submit tickets</div><div class="perm-item"><input type="checkbox"> API access</div></div></div>
+            <button class="btn btn-primary" style="margin-top:16px" onclick="showToast('Permissions saved.','success')">Save permissions</button>
+          </div>
+          <div>
+            <div class="card"><div class="card-title">Feature Access Toggles</div>
+              <div class="toggle-row"><div><div class="toggle-row-label">Public Registration</div><div class="toggle-row-desc">Allow new users to self-register</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-row-label">API Access</div><div class="toggle-row-desc">Enable REST API for users</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-row-label">Server Deployment</div><div class="toggle-row-desc">Allow users to deploy VPS</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-row-label">Billing Portal</div><div class="toggle-row-desc">Show billing section to users</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="toggle-row"><div><div class="toggle-row-label">Support Tickets</div><div class="toggle-row-desc">Users can open support tickets</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            </div>
+            <div class="card"><div class="card-title">Permission Matrix</div>
+              <div class="table-wrap"><table class="table"><thead><tr><th>Permission</th><th>User</th><th>Mod</th><th>Admin</th></tr></thead><tbody>
+                <tr><td>View own dashboard</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Deploy servers</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Moderate content</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                <tr><td>View all users</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Edit any user</td><td>❌</td><td>❌</td><td>✅</td></tr>
+                <tr><td>System config</td><td>❌</td><td>❌</td><td>✅</td></tr>
+                <tr><td>Manage billing</td><td>❌</td><td>❌</td><td>✅</td></tr>
+              </tbody></table></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. CONTENT MODERATION -->
+      <div id="admin-content" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>Content Moderation</h2><p>Review, approve, or reject user-generated content.</p></div></div>
+        <div class="admin-subnav">
+          <div class="admin-tab active" onclick="showContentTab('pending',this)">Pending Review (3)</div>
+          <div class="admin-tab" onclick="showContentTab('approved',this)">Approved</div>
+          <div class="admin-tab" onclick="showContentTab('rejected',this)">Rejected</div>
+        </div>
+        <div id="ctab-pending"><div class="alert alert-warning">⚠ 3 items awaiting your review.</div><div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>Submitted by</th><th>Content preview</th><th>Date</th><th>Actions</th></tr></thead><tbody id="pendingBody">
+          <tr data-id="1"><td><span class="badge badge-blue">Comment</span></td><td>john@example.com</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Request for custom server config with GPU passthrough...</td><td>28 Mar 2026</td><td><div class="table-actions"><button class="btn btn-primary btn-sm" onclick="moderateRow(this,'approved')">Approve</button><button class="btn btn-danger btn-sm" onclick="moderateRow(this,'rejected')">Reject</button></div></td></tr>
+          <tr data-id="2"><td><span class="badge badge-yellow">Upload</span></td><td>alice@mail.com</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">SSH public key file for automated deployment pipeline</td><td>27 Mar 2026</td><td><div class="table-actions"><button class="btn btn-primary btn-sm" onclick="moderateRow(this,'approved')">Approve</button><button class="btn btn-danger btn-sm" onclick="moderateRow(this,'rejected')">Reject</button></div></td></tr>
+          <tr data-id="3"><td><span class="badge badge-blue">Ticket</span></td><td>bob@cloud.io</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Migration assistance for production environment</td><td>26 Mar 2026</td><td><div class="table-actions"><button class="btn btn-primary btn-sm" onclick="moderateRow(this,'approved')">Approve</button><button class="btn btn-danger btn-sm" onclick="moderateRow(this,'rejected')">Reject</button></div></td></tr>
+        </tbody></table></div></div>
+        <div id="ctab-approved" class="hidden"><div class="alert alert-success">✓ Showing approved content.</div><div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>User</th><th>Content</th><th>Approved</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:28px">No approved content yet.</td></tr></tbody></table></div></div>
+        <div id="ctab-rejected" class="hidden"><div class="alert alert-danger">✕ Showing rejected content.</div><div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>User</th><th>Content</th><th>Rejected</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:28px">No rejected content.</td></tr></tbody></table></div></div>
+      </div>
+
+      <!-- 4. SYSTEM CONFIG -->
+      <div id="admin-config" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>System Configuration</h2><p>Global settings, integrations, and platform behaviour.</p></div></div>
+        <div class="two-col">
+          <div class="card"><div class="card-title">General Settings</div>
+            <div class="form-group"><label>Platform Name</label><input type="text" value="NimbusVPS"></div>
+            <div class="form-group"><label>Support Email</label><input type="email" value="support@nimbusvps.com"></div>
+            <div class="form-group"><label>Default Role</label><select><option>user</option><option>moderator</option></select></div>
+            <div class="form-group"><label>Max Servers Per User</label><input type="number" value="10"></div>
+            <button class="btn btn-primary" onclick="showToast('Settings saved.','success')">Save settings</button>
+          </div>
+          <div class="card"><div class="card-title">Email / SMTP</div>
+            <div class="form-group"><label>SMTP Host</label><input placeholder="smtp.mailgun.com"></div>
+            <div class="form-group"><label>SMTP Port</label><input type="number" placeholder="587"></div>
+            <div class="form-group"><label>Username</label><input placeholder="apikey"></div>
+            <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••"></div>
+            <button class="btn btn-outline" onclick="showToast('Test email sent.','success')">Test connection</button>
+          </div>
+          <div class="card"><div class="card-title">Security Settings</div>
+            <div class="toggle-row"><div><div class="toggle-row-label">Require 2FA for Admins</div><div class="toggle-row-desc">TOTP on every admin login</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">Force Password Reset</div><div class="toggle-row-desc">On first login for new accounts</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">Rate Limit Login</div><div class="toggle-row-desc">Block after 5 consecutive failures</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">Maintenance Mode</div><div class="toggle-row-desc">Restrict to admins only</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          </div>
+          <div class="card"><div class="card-title">API & Integrations</div>
+            <div class="form-group"><label>Stripe Secret Key</label><input type="password" placeholder="sk_live_••••••••"></div>
+            <div class="form-group"><label>Hetzner Cloud Token</label><input type="password" placeholder="••••••••"></div>
+            <div class="form-group"><label>Webhook URL</label><input type="url" placeholder="https://your-site.com/webhook"></div>
+            <button class="btn btn-outline" onclick="showToast('Integrations saved.','success')">Save integrations</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. REPORTS -->
+      <div id="admin-reports" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>Data & Reports</h2><p>Analytics, activity logs, and data exports.</p></div><button class="btn btn-outline" onclick="exportCSV()">⬇ Export CSV</button></div>
+        <div class="metrics-grid metrics-grid-4">
+          <div class="metric-card"><div class="metric-label">Total Revenue</div><div class="metric-val" id="rpt-rev">$0</div></div>
+          <div class="metric-card"><div class="metric-label">Total Orders</div><div class="metric-val" id="rpt-ord">0</div></div>
+          <div class="metric-card"><div class="metric-label">Active Servers</div><div class="metric-val" id="rpt-srv">0</div></div>
+          <div class="metric-card"><div class="metric-label">Registered Users</div><div class="metric-val" id="rpt-usr">0</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card"><div class="card-title">Activity Log</div><div id="activityLogList" style="max-height:380px;overflow-y:auto"></div></div>
+          <div class="card"><div class="card-title">All Orders</div><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>User</th><th>Plan</th><th>Amount</th></tr></thead><tbody id="rptOrdersBody"><tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No orders yet.</td></tr></tbody></table></div></div>
+        </div>
+      </div>
+
+      <!-- 6. SECURITY -->
+      <div id="admin-security" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>Security Control</h2><p>Monitor threats, manage bans, and control authentication.</p></div></div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Banned Users</div><div class="metric-val" id="sec-banned">0</div><div class="metric-change red">Permanent</div></div>
+          <div class="metric-card"><div class="metric-label">Suspended Users</div><div class="metric-val" id="sec-suspended">0</div><div class="metric-change red">Temporary</div></div>
+          <div class="metric-card"><div class="metric-label">Failed Logins</div><div class="metric-val">12</div><div class="metric-change red">Last 24h</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card"><div class="card-title">Suspicious Activity</div>
+            <div class="log-entry"><span style="font-size:16px">⚠️</span><div style="flex:1"><div style="font-weight:600;font-size:13px">Multiple failed logins</div><div style="font-size:12px;color:var(--text2)">IP 198.51.100.42 — 7 attempts</div></div><span class="log-time">2h ago</span></div>
+            <div class="log-entry"><span style="font-size:16px">🔴</span><div style="flex:1"><div style="font-weight:600;font-size:13px">Unusual API spike</div><div style="font-size:12px;color:var(--text2)">user@example.com — 3,200 req/hr</div></div><span class="log-time">5h ago</span></div>
+            <div class="log-entry"><span style="font-size:16px">⚠️</span><div style="flex:1"><div style="font-weight:600;font-size:13px">Account from new country</div><div style="font-size:12px;color:var(--text2)">alice@mail.com — NG→BR</div></div><span class="log-time">1d ago</span></div>
+          </div>
+          <div class="card"><div class="card-title">Authentication Methods</div>
+            <div class="toggle-row"><div><div class="toggle-row-label">Email + Password</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">TOTP Authenticator</div></div><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">SMS One-Time Code</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">Magic Link (Email)</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+            <div class="toggle-row"><div><div class="toggle-row-label">OAuth (Google/GitHub)</div></div><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          </div>
+        </div>
+        <div class="card"><div class="card-title">Banned & Suspended Users</div><div class="table-wrap"><table class="table"><thead><tr><th>User</th><th>Email</th><th>Type</th><th>Reason</th><th>Date</th><th>Actions</th></tr></thead><tbody id="bannedTable"><tr><td colspan="6" style="text-align:center;color:var(--text3);padding:28px">No restricted users.</td></tr></tbody></table></div></div>
+      </div>
+
+      <!-- 7. BILLING -->
+      <div id="admin-billing" class="hidden">
+        <div class="dash-header"><div class="dash-header-text"><h2>Billing & Subscriptions</h2><p>Manage plans, invoices, payments, and feature access.</p></div></div>
+        <div class="metrics-grid metrics-grid-4">
+          <div class="metric-card"><div class="metric-label">MRR</div><div class="metric-val" id="bill-mrr">$0</div><div class="metric-change">Recurring</div></div>
+          <div class="metric-card"><div class="metric-label">Paid Invoices</div><div class="metric-val" id="bill-count">0</div></div>
+          <div class="metric-card"><div class="metric-label">Avg Plan Value</div><div class="metric-val" id="bill-avg">$0</div></div>
+          <div class="metric-card"><div class="metric-label">Refunds</div><div class="metric-val">0</div><div class="metric-change red">This month</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card"><div class="card-title">Plan Management</div><div class="table-wrap"><table class="table"><thead><tr><th>Plan</th><th>Price/mo</th><th>Active</th><th>Actions</th></tr></thead><tbody>
+            <tr><td><strong>Starter</strong></td><td>$5</td><td id="pc-starter">0</td><td><button class="btn btn-outline btn-sm" onclick="showToast('Plan editor coming soon.')">Edit</button></td></tr>
+            <tr><td><strong>Professional</strong></td><td>$28</td><td id="pc-pro">0</td><td><button class="btn btn-outline btn-sm" onclick="showToast('Plan editor coming soon.')">Edit</button></td></tr>
+            <tr><td><strong>Enterprise</strong></td><td>$96</td><td id="pc-ent">0</td><td><button class="btn btn-outline btn-sm" onclick="showToast('Plan editor coming soon.')">Edit</button></td></tr>
+          </tbody></table></div></div>
+          <div class="card"><div class="card-title">Feature Access by Plan</div><div class="table-wrap"><table class="table"><thead><tr><th>Feature</th><th>Starter</th><th>Pro</th><th>Enterprise</th></tr></thead><tbody>
+            <tr><td>DDoS Protection</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Automated Backups</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Dedicated IP</td><td>❌</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Priority Support</td><td>❌</td><td>❌</td><td>✅</td></tr>
+            <tr><td>API Access</td><td>❌</td><td>✅</td><td>✅</td></tr>
+          </tbody></table></div></div>
+        </div>
+        <div class="card"><div class="card-title">All Invoices</div><div class="table-wrap"><table class="table"><thead><tr><th>Invoice ID</th><th>User</th><th>Plan</th><th>Amount</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="allInvoicesBody"><tr><td colspan="7" style="text-align:center;color:var(--text3);padding:28px">No invoices yet.</td></tr></tbody></table></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ════════════ MODALS ════════════ -->
+
+<!-- REGISTER -->
+<div id="modal-register" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-register')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('register')">✕</button>
+    <div class="tag" style="margin-bottom:10px">Create account</div>
+    <h2>Get started today</h2>
+    <p class="modal-sub">Join thousands of developers on NimbusVPS.</p>
+    <div class="form-group"><label>Full name</label><input id="reg-name" placeholder="Jane Smith"></div>
+    <div class="form-group"><label>Email address</label><input type="email" id="reg-email" placeholder="jane@example.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="Min. 8 characters"></div>
+    <div id="reg-error" class="error-msg hidden"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="doRegister()">Create account →</button>
+    <div class="auth-toggle">Already have an account? <a onclick="switchModal('register','login')">Sign in</a></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="modal-login" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-login')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')">✕</button>
+    <div class="tag" style="margin-bottom:10px">Welcome back</div>
+    <h2>Sign in</h2>
+    <p class="modal-sub">Access your NimbusVPS dashboard.</p>
+    <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="jane@example.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="Your password"></div>
+    <div id="login-error" class="error-msg hidden"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="doLogin()">Sign in →</button>
+    <div style="margin-top:14px;padding:14px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;font-weight:600">Demo accounts</div>
+      <div style="font-size:12px;color:var(--text2)">Admin: <strong>admin@nimbus.com</strong> / admin123</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px">User: <strong>user@nimbus.com</strong> / user123</div>
+    </div>
+    <div class="auth-toggle">Don't have an account? <a onclick="switchModal('login','register')">Create one</a></div>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div id="modal-checkout" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-checkout')">
+  <div class="modal" style="max-width:500px">
+    <button class="modal-close" onclick="closeModal('checkout')">✕</button>
+    <div class="tag" style="margin-bottom:10px">Secure checkout</div>
+    <h2>Complete your order</h2>
+    <p class="modal-sub">Your server will be deployed instantly after payment.</p>
+    <div class="checkout-plan-summary">
+      <div class="checkout-plan-name" id="co-plan-name">VPS Plan</div>
+      <div class="checkout-plan-price" id="co-plan-price">$0/month</div>
+      <div class="checkout-plan-specs"><span class="checkout-plan-spec" id="co-cpu">—</span><span class="checkout-plan-spec" id="co-ram">—</span><span class="checkout-plan-spec" id="co-storage">—</span></div>
+    </div>
+    <div class="form-group"><label>Region</label><select id="co-region"><option>🇺🇸 New York, USA</option><option>🇬🇧 London, UK</option><option>🇩🇪 Frankfurt, Germany</option><option>🇸🇬 Singapore</option><option>🇦🇺 Sydney, Australia</option></select></div>
+    <div class="divider"></div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:14px;color:var(--text)">Payment details</div>
+    <div class="form-group"><label>Cardholder name</label><input id="co-card-name" placeholder="Jane Smith"></div>
+    <div class="form-group"><label>Card number</label><div class="card-input-group"><input id="co-card-num" placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCard(this)"><span class="card-icon">💳</span></div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Expiry</label><input id="co-expiry" placeholder="MM / YY" maxlength="7" oninput="fmtExpiry(this)"></div>
+      <div class="form-group"><label>CVV</label><input id="co-cvv" placeholder="123" maxlength="3"></div>
+    </div>
+    <div id="co-error" class="error-msg hidden"></div>
+    <div class="order-total"><span class="order-total-label">Total due today</span><span class="order-total-val" id="co-total">$0</span></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px" onclick="doCheckout()">⚡ Pay and deploy server</button>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text3)">256-bit SSL encrypted · Cancel anytime</div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="modal-success" class="modal-overlay hidden">
+  <div class="modal" style="max-width:420px">
+    <div class="success-screen">
+      <div class="success-icon">✓</div>
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:12px">Server deployed!</h2>
+      <p style="color:var(--text2);font-size:15px;margin-bottom:28px">Your VPS is provisioning and will be live within 60 seconds. Check your dashboard for connection details.</p>
+      <button class="btn btn-primary" onclick="closeModal('success');showPage('dashboard')">Go to dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE USER -->
+<div id="modal-createUser" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-createUser')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('createUser')">✕</button>
+    <div class="tag" style="margin-bottom:10px">Admin action</div>
+    <h2>Create user</h2>
+    <p class="modal-sub">Manually provision a new account.</p>
+    <div class="form-group"><label>Full name</label><input id="cu-name" placeholder="John Doe"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="cu-email" placeholder="john@example.com"></div>
+    <div class="form-group"><label>Temporary password</label><input type="password" id="cu-pass" placeholder="Min. 8 characters"></div>
+    <div class="form-group"><label>Role</label><select id="cu-role"><option value="user">User</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select></div>
+    <div id="cu-error" class="error-msg hidden"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px" onclick="adminCreateUser()">Create account</button>
+  </div>
+</div>
+
+<!-- EDIT USER -->
+<div id="modal-editUser" class="modal-overlay hidden" onclick="closeModalOutside(event,'modal-editUser')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editUser')">✕</button>
+    <div class="tag" style="margin-bottom:10px">Admin action</div>
+    <h2>Edit user</h2>
+    <input type="hidden" id="eu-id">
+    <div class="form-group"><label>Full name</label><input id="eu-name"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="eu-email"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Role</label><select id="eu-role"><option value="user">User</option><option value="moderator">Moderator</option><option value="admin">Admin</option></select></div>
+      <div class="form-group"><label>Status</label><select id="eu-status"><option value="active">Active</option><option value="suspended">Suspended</option><option value="banned">Banned</option></select></div>
+    </div>
+    <div class="form-group"><label>New password <span style="color:var(--text3);font-weight:400">(blank = keep current)</span></label><input type="password" id="eu-pass" placeholder="New password"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px" onclick="adminSaveUser()">Save changes</button>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div id="modal-confirm" class="modal-overlay hidden">
+  <div class="modal confirm-modal">
+    <div style="font-size:44px;margin-bottom:16px">⚠️</div>
+    <h3 id="confirm-title">Confirm</h3>
+    <p id="confirm-msg">This action cannot be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-ghost" onclick="closeModal('confirm')">Cancel</button>
+      <button class="btn btn-danger" id="confirm-ok">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ══════════════════════════════════════════
+   SUPABASE CONFIG
+   Replace with your own credentials from:
+   Supabase Dashboard → Project Settings → API
+══════════════════════════════════════════ */
+const SUPABASE_URL = 'https://shovgjkrtrenjiiabqco.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_ee6TnZRyuV5n3JEERZV70g_714qiENM'
+const { createClient } = supabase
+const db = createClient(SUPABASE_URL, SUPABASE_KEY)
+/* ══════════════════════════════════════════
+   THEME SYSTEM
+   Supports: dark | light | system
+   Persisted in localStorage
+══════════════════════════════════════════ */
+let currentTheme = localStorage.getItem('nimbus-theme') || 'dark'
+
+function setTheme(mode) {
+  currentTheme = mode
+  localStorage.setItem('nimbus-theme', mode)
+  applyTheme()
+  syncThemeButtons()
+}
+
+function applyTheme() {
+  const html = document.documentElement
+  if (currentTheme === 'system') {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    html.setAttribute('data-theme', isDark ? 'dark' : 'light')
+  } else {
+    html.setAttribute('data-theme', currentTheme)
+  }
+}
+
+function syncThemeButtons() {
+  // Nav + sidebar toggle buttons
+  const sets = [
+    ['tb-dark','tb-system','tb-light'],
+    ['stb-dark','stb-system','stb-light'],
+    ['atb-dark','atb-system','atb-light']
+  ]
+  sets.forEach(([dark, sys, light]) => {
+    document.getElementById(dark)?.classList.toggle('active', currentTheme === 'dark')
+    document.getElementById(sys)?.classList.toggle('active',  currentTheme === 'system')
+    document.getElementById(light)?.classList.toggle('active', currentTheme === 'light')
+  })
+}
+
+// React to OS theme change when mode is 'system'
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (currentTheme === 'system') applyTheme()
+})
+
+// Init theme on load
+applyTheme()
+syncThemeButtons()
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const S = { user: null, plan: null, log: [] }
+
+/* ══════════════════════════════════════════
+   SESSION RESTORE
+══════════════════════════════════════════ */
+db.auth.onAuthStateChange(async (event, session) => {
+  if (session?.user) {
+    const { data: profile } = await db.from('profiles').select('*').eq('id', session.user.id).single()
+    if (profile) loginUser(profile)
+  } else {
+    clearAuthUI()
+  }
+})
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.getElementById('page-' + name).classList.add('active')
+  closeMenus()
+  // Highlight nav link
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'))
+  const nl = document.getElementById('nl-' + name)
+  if (nl) nl.classList.add('active')
+  if (name === 'admin')     { showAdminSection('users', document.getElementById('asi-users')); syncAdmin() }
+  if (name === 'dashboard') { showDashTab('overview',   document.getElementById('dsi-overview')); syncDash() }
+  if (name === 'faq')       renderFAQ()
+  window.scrollTo(0, 0)
+}
+
+function goPricing() {
+  showPage('home')
+  setTimeout(() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' }), 160)
+}
+function goAdmin() { closeMenus(); showPage('admin') }
+
+/* ══════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════ */
+function openModal(n)  { document.getElementById('modal-' + n).classList.remove('hidden'); document.body.style.overflow = 'hidden' }
+function closeModal(n) { document.getElementById('modal-' + n).classList.add('hidden');    document.body.style.overflow = '' }
+function closeModalOutside(e, id) { if (e.target.id === id) closeModal(id.replace('modal-', '')) }
+function switchModal(a, b) { closeModal(a); openModal(b) }
+function closeMenus() { document.getElementById('userMenu').classList.add('hidden') }
+
+/* ══════════════════════════════════════════
+   UI HELPERS
+══════════════════════════════════════════ */
+function showError(el, msg) { el.textContent = msg; el.classList.remove('hidden') }
+
+function showToast(msg, type = 'default') {
+  const t = document.getElementById('toast')
+  t.textContent = msg
+  t.className   = 'show ' + type
+  clearTimeout(t._timer)
+  t._timer = setTimeout(() => t.className = '', 3500)
+}
+
+function setLoading(btn, loading) {
+  if (!btn) return
+  if (loading) { btn._orig = btn.innerHTML; btn.innerHTML = '<span class="spinner"></span> Please wait…'; btn.disabled = true }
+  else         { btn.innerHTML = btn._orig || btn.innerHTML; btn.disabled = false }
+}
+
+function g(id)    { return document.getElementById(id)?.value?.trim() || '' }
+function set(id, v) { const e = document.getElementById(id); if (e) e.textContent = v }
+function td()     { return new Date().toISOString().split('T')[0] }
+function rs()     { return Math.random().toString(36).substring(2, 7).toUpperCase() }
+function ri(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a }
+function rb(r)    { return r === 'admin' ? 'badge-gold' : r === 'moderator' ? 'badge-blue' : 'badge-green' }
+function sd(s)    { return s === 'active' ? 'green' : s === 'suspended' ? 'yellow' : 'red' }
+function logLocal(icon, msg) { S.log.push({ icon, msg, time: new Date().toLocaleTimeString() }) }
+
+document.addEventListener('click', e => { if (!e.target.closest('.nav-user-wrap')) closeMenus() })
+
+/* ══════════════════════════════════════════
+   FAQ DATA & RENDERING
+══════════════════════════════════════════ */
+const FAQS = [
+  { cat:'billing', q:'How does billing work?',          a:'We bill monthly on the date you first purchased your plan. You can cancel at any time and will retain access until the end of the current billing period. No refunds for partial months.' },
+  { cat:'billing', q:'What payment methods do you accept?', a:'We accept all major credit and debit cards (Visa, Mastercard, Amex) via Stripe. We plan to add PayPal and crypto payments in Q3 2026.' },
+  { cat:'billing', q:'Can I upgrade or downgrade my plan?', a:'Yes! You can change plans at any time from your billing dashboard. Upgrades take effect immediately, prorated to the current billing period. Downgrades take effect at the next renewal.' },
+  { cat:'billing', q:'Do you offer refunds?',            a:'We offer a 7-day money-back guarantee for new customers on their first purchase. After that period, payments are non-refundable, but you can cancel to stop future charges.' },
+  { cat:'servers', q:'How quickly is my server deployed?', a:'Most servers are deployed within 60 seconds of a successful payment. In peak times or for Enterprise plans in specific regions it may take up to 5 minutes.' },
+  { cat:'servers', q:'What operating systems are available?', a:'We offer Ubuntu 22.04/24.04 LTS, Debian 12, CentOS Stream 9, AlmaLinux 9, Rocky Linux 9, and Fedora 39. Custom ISO uploads are available on Professional and Enterprise plans.' },
+  { cat:'servers', q:'Can I take snapshots of my server?', a:'Automated daily backups are included on all plans. Manual snapshots are available on Professional and Enterprise plans, with up to 5 snapshot slots.' },
+  { cat:'servers', q:'What is the bandwidth policy?',    a:'Each plan includes a generous bandwidth allowance (1–20 TB). Exceeding this results in a small overage charge of $0.01/GB rather than hard throttling. We will always notify you at 80%.' },
+  { cat:'security', q:'Is DDoS protection included?',   a:'Yes, all plans include enterprise-grade DDoS mitigation up to 1 Tbps, powered by our partner network. Protection is always-on and requires no configuration.' },
+  { cat:'security', q:'How do you secure my data?',     a:'Data at rest is encrypted with AES-256. Data in transit uses TLS 1.3. Our data centres are SOC 2 Type II certified with 24/7 physical security and biometric access control.' },
+  { cat:'security', q:'Do you support two-factor authentication?', a:'Yes! We support TOTP (Google Authenticator, Authy), and we are adding SMS and hardware key (WebAuthn) support in the next release.' },
+  { cat:'technical', q:'Do I get root access?',         a:'Absolutely. Every VPS comes with full root/sudo access. You have complete control over the operating system, software, and configuration.' },
+  { cat:'technical', q:'What virtualisation technology do you use?', a:'We use KVM (Kernel-based Virtual Machine) hypervisors with virtio drivers. This gives you near-bare-metal performance and full hardware-level isolation between VMs.' },
+  { cat:'technical', q:'Is IPv6 supported?',            a:'Yes, each server gets a /64 IPv6 subnet in addition to the included IPv4 addresses. IPv6 is fully routed and available by default.' },
+  { cat:'account', q:'Can I have multiple servers on one account?', a:'Yes. The default limit is 10 active servers per account. If you need more, contact our support team and we can increase this limit for your account.' },
+  { cat:'account', q:'How do I reset my password?',    a:'Click "Sign in" and then "Forgot password" to receive a password reset email. If you no longer have access to your email address, contact our support team with identity verification.' },
+  { cat:'account', q:'Can I transfer a server to another account?', a:'Server transfers between accounts are handled by our support team. Submit a request with both account details and server ID and we will process it within 24 hours.' },
+]
+
+let faqActiveCat = 'all'
+
+function renderFAQ(searchQ = '', cat = faqActiveCat) {
+  const grid = document.getElementById('faqGrid')
+  if (!grid) return
+  const filtered = FAQS.filter(f =>
+    (cat === 'all' || f.cat === cat) &&
+    (!searchQ || f.q.toLowerCase().includes(searchQ) || f.a.toLowerCase().includes(searchQ))
+  )
+  grid.innerHTML = filtered.length
+    ? filtered.map((f, i) => `
+        <div class="faq-item" id="faq-${i}">
+          <div class="faq-question" onclick="toggleFAQ('faq-${i}')">
+            <span>${f.q}</span>
+            <div class="faq-chevron">▾</div>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">${f.a}</div></div>
+        </div>`).join('')
+    : `<div style="text-align:center;padding:48px;color:var(--text3)">No questions match your search.</div>`
+}
+
+function toggleFAQ(id) {
+  const item = document.getElementById(id)
+  const isOpen = item.classList.contains('open')
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'))
+  if (!isOpen) item.classList.add('open')
+}
+
+function filterFAQ(val) { renderFAQ(val.toLowerCase(), faqActiveCat) }
+
+function filterFAQCat(cat, el) {
+  faqActiveCat = cat
+  document.querySelectorAll('.faq-cat').forEach(c => c.classList.remove('active'))
+  if (el) el.classList.add('active')
+  renderFAQ('', cat)
+}
+
+/* ══════════════════════════════════════════
+   AUTH — REGISTER
+══════════════════════════════════════════ */
+async function doRegister() {
+  const name  = g('reg-name')
+  const email = g('reg-email')
+  const pass  = g('reg-password')
+  const errEl = document.getElementById('reg-error')
+  errEl.classList.add('hidden')
+  if (!name || !email || !pass) { showError(errEl, 'Please fill in all fields.'); return }
+  if (pass.length < 8)          { showError(errEl, 'Password must be at least 8 characters.'); return }
+
+  const btn = event.currentTarget; setLoading(btn, true)
+  const { data, error } = await db.auth.signUp({ email, password: pass, options: { data: { full_name: name } } })
+  setLoading(btn, false)
+  if (error) { showError(errEl, error.message); return }
+
+  const { data: profile } = await db.from('profiles').select('*').eq('id', data.user.id).single()
+  logLocal('🟢', 'New account: ' + email)
+  loginUser(profile || { id: data.user.id, full_name: name, email, role: 'user', status: 'active' })
+  closeModal('register')
+  showToast('Welcome to NimbusVPS! 🎉', 'success')
+}
+
+/* ══════════════════════════════════════════
+   AUTH — LOGIN
+══════════════════════════════════════════ */
+async function doLogin() {
+  const email = g('login-email')
+  const pass  = g('login-password')
+  const errEl = document.getElementById('login-error')
+  errEl.classList.add('hidden')
+
+  const btn = event.currentTarget; setLoading(btn, true)
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pass })
+  if (error) { setLoading(btn, false); showError(errEl, error.message); return }
+
+  const { data: profile, error: pErr } = await db.from('profiles').select('*').eq('id', data.user.id).single()
+  setLoading(btn, false)
+  if (pErr || !profile) { showError(errEl, 'Could not load your profile. Please try again.'); return }
+  if (profile.status === 'banned')    { await db.auth.signOut(); showError(errEl, 'Account banned. Contact support.'); return }
+  if (profile.status === 'suspended') { await db.auth.signOut(); showError(errEl, 'Account suspended. Contact support.'); return }
+
+  await db.from('profiles').update({ last_login_at: new Date().toISOString() }).eq('id', profile.id)
+  logLocal('🔵', 'Logged in: ' + email)
+  loginUser(profile)
+  closeModal('login')
+  if (S.plan) openModal('checkout')
+}
+
+/* ══════════════════════════════════════════
+   AUTH — LOGOUT
+══════════════════════════════════════════ */
+async function logout() {
+  logLocal('⚪', 'Logged out: ' + S.user?.email)
+  await db.auth.signOut()
+  S.user = null; S.plan = null
+  clearAuthUI(); closeMenus(); showPage('home')
+}
+
+function loginUser(p) {
+  S.user = p
+  const name = p.full_name || p.name || p.email
+  document.getElementById('navGuest').classList.add('hidden')
+  document.getElementById('navAuth').classList.remove('hidden')
+  document.getElementById('navUserName').textContent = name
+  document.getElementById('navAvatar').textContent   = name[0].toUpperCase()
+  document.getElementById('sidebarUser').textContent = name
+  document.getElementById('sidebarRole').textContent = p.role
+  document.getElementById('dashGreetName').textContent = name.split(' ')[0]
+  const am = document.getElementById('adminMenuItem')
+  p.role === 'admin' ? am.classList.remove('hidden') : am.classList.add('hidden')
+}
+function clearAuthUI() {
+  document.getElementById('navGuest').classList.remove('hidden')
+  document.getElementById('navAuth').classList.add('hidden')
+}
+function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('hidden') }
+
+/* ══════════════════════════════════════════
+   PLAN SELECTION
+══════════════════════════════════════════ */
+function selectPlan(name, price, cpu, ram, storage, bandwidth) {
+  S.plan = { name, price, cpu, ram, storage, bandwidth }
+  if (!S.user) { openModal('login'); return }
+  document.getElementById('co-plan-name').textContent  = name + ' VPS'
+  document.getElementById('co-plan-price').textContent = '$' + price + '/month'
+  document.getElementById('co-cpu').textContent        = cpu + ' vCPU'
+  document.getElementById('co-ram').textContent        = ram + ' RAM'
+  document.getElementById('co-storage').textContent    = storage
+  document.getElementById('co-total').textContent      = '$' + price
+  openModal('checkout')
+}
+
+/* ══════════════════════════════════════════
+   CHECKOUT
+══════════════════════════════════════════ */
+function fmtCard(i)   { let v = i.value.replace(/\D/g,'').substring(0,16); i.value = v.replace(/(.{4})/g,'$1 ').trim() }
+function fmtExpiry(i) { let v = i.value.replace(/\D/g,'').substring(0,4); if(v.length>=3) v=v.substring(0,2)+' / '+v.substring(2); i.value=v }
+
+async function doCheckout() {
+  const cn  = g('co-card-name'), num = g('co-card-num').replace(/\s/g,'')
+  const exp = g('co-expiry'),    cvv = g('co-cvv'),  reg = g('co-region')
+  const err = document.getElementById('co-error'); err.classList.add('hidden')
+  if (!cn)             { showError(err,'Enter cardholder name.'); return }
+  if (num.length < 16) { showError(err,'Enter a valid 16-digit card number.'); return }
+  if (!exp.includes('/')) { showError(err,'Enter a valid expiry date.'); return }
+  if (cvv.length < 3)  { showError(err,'Enter a valid CVV.'); return }
+
+  const btn = event.currentTarget; setLoading(btn, true)
+  try {
+    const { data: planRow, error: pErr } = await db.from('plans').select('id,price_monthly').eq('name', S.plan.name).single()
+    if (pErr || !planRow) throw new Error('Plan not found. Please try again.')
+
+    const { data: order, error: oErr } = await db.from('orders').insert({
+      user_id: S.user.id, plan_id: planRow.id, amount: planRow.price_monthly,
+      status: 'paid', billing_name: cn, billing_email: S.user.email,
+      card_last4: num.slice(-4), paid_at: new Date().toISOString()
+    }).select().single()
+    if (oErr) throw new Error('Order failed: ' + oErr.message)
+
+    await db.from('invoices').insert({
+      user_id: S.user.id, order_id: order.id, plan_id: planRow.id,
+      amount: planRow.price_monthly, status: 'paid',
+      description: `${S.plan.name} VPS — ${reg}`, paid_at: new Date().toISOString()
+    })
+
+    const region = reg.replace(/^[\u{1F1E0}-\u{1F1FF}]{2}\s*/u,'')
+    await db.from('servers').insert({
+      user_id: S.user.id, order_id: order.id, plan_id: planRow.id,
+      status: 'provisioning', region,
+      ipv4_primary: `${ri(10,200)}.${ri(0,255)}.${ri(0,255)}.${ri(1,254)}`,
+      deployed_at: new Date().toISOString()
+    })
+
+    await db.from('activity_logs').insert({
+      user_id: S.user.id, actor_id: S.user.id, type: 'plan_purchase',
+      description: `Purchased ${S.plan.name} VPS — $${planRow.price_monthly}/mo`,
+      metadata: { order_id: order.id, plan: S.plan.name, region }
+    })
+
+    logLocal('💳', `Order placed — ${S.user.email} → ${S.plan.name}`)
+    S.plan = null; setLoading(btn, false)
+    closeModal('checkout'); openModal('success')
+  } catch(e) {
+    setLoading(btn, false)
+    showError(err, e.message || 'Something went wrong. Please try again.')
+  }
+}
+
+/* ══════════════════════════════════════════
+   USER DASHBOARD
+══════════════════════════════════════════ */
+function showDashTab(tab, el) {
+  ['overview','servers','billing'].forEach(t => document.getElementById('dash-' + t)?.classList.add('hidden'))
+  document.getElementById('dash-' + tab)?.classList.remove('hidden')
+  document.querySelectorAll('#page-dashboard .sidebar-item').forEach(i => i.classList.remove('active'))
+  if (el) el.classList.add('active')
+  syncDash()
+}
+
+async function syncDash() {
+  if (!S.user) return
+  const uid = S.user.id
+  const [{ data: myServers }, { data: myOrders }] = await Promise.all([
+    db.from('servers').select('*,plans(name)').eq('user_id', uid).neq('status','deleted'),
+    db.from('orders').select('*,plans(name)').eq('user_id', uid).order('created_at',{ascending:false})
+  ])
+  const srvs = myServers || [], ords = myOrders || []
+  set('metricServers', srvs.length)
+  set('metricSpend', '$' + ords.reduce((a,o) => a + Number(o.amount), 0).toFixed(0))
+
+  document.getElementById('activityTable').innerHTML = ords.length
+    ? ords.map(o => `<tr><td>Server deployed</td><td>${o.plans?.name||'—'} VPS</td><td>${o.created_at?.split('T')[0]}</td><td><span class="status-dot green"></span>Completed</td></tr>`).join('')
+    : `<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:32px">No activity yet.</td></tr>`
+
+  document.getElementById('serversList').innerHTML = srvs.length
+    ? srvs.map(s => `<div class="server-item"><div class="server-info"><h4>${s.plans?.name||'VPS'} Server <span class="badge badge-green" style="font-size:10px;margin-left:6px">${s.status}</span></h4><p>IP: <span style="font-family:monospace">${s.ipv4_primary||'Provisioning…'}</span> · ${s.region} · <span style="font-family:monospace">${s.server_ref||s.id}</span></p></div><div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="showToast('Restart sent.')">Restart</button><button class="btn btn-outline btn-sm" onclick="showToast('Console opening…')">Console</button></div></div>`).join('')
+    : `<div style="text-align:center;padding:60px 20px;color:var(--text3)"><div style="font-size:40px;margin-bottom:16px">🖥️</div><p style="margin-bottom:20px">No servers yet.</p><button class="btn btn-primary" onclick="goPricing()">Browse plans</button></div>`
+
+  const { data: invs } = await db.from('invoices').select('*,plans(name)').eq('user_id', uid).order('created_at',{ascending:false})
+  document.getElementById('invoiceTable').innerHTML = (invs||[]).length
+    ? invs.map(i => `<tr><td style="font-family:monospace;font-size:12px">${i.invoice_number}</td><td>${i.plans?.name||'—'} VPS</td><td><strong>$${Number(i.amount).toFixed(2)}</strong></td><td>${i.created_at?.split('T')[0]}</td><td><span class="status-dot ${i.status==='paid'?'green':'yellow'}"></span>${i.status}</td></tr>`).join('')
+    : `<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:32px">No invoices yet.</td></tr>`
+}
+
+/* ══════════════════════════════════════════
+   ADMIN
+══════════════════════════════════════════ */
+function showAdminSection(sec, el) {
+  ['users','access','content','config','reports','security','billing'].forEach(s => {
+    document.getElementById('admin-' + s)?.classList.add('hidden')
+  })
+  document.getElementById('admin-' + sec)?.classList.remove('hidden')
+  document.querySelectorAll('#page-admin .sidebar-item').forEach(i => i.classList.remove('active'))
+  if (el) el.classList.add('active')
+  if (sec === 'reports')  syncReports()
+  if (sec === 'billing')  syncBilling()
+  if (sec === 'security') syncSecurity()
+  if (sec === 'users')    renderUsersTable()
+}
+async function syncAdmin() {
+  await Promise.all([renderUsersTable(), syncReports(), syncBilling(), syncSecurity()])
+}
+
+async function renderUsersTable() {
+  const q  = (document.getElementById('userSearch')?.value||'').toLowerCase()
+  const rf = document.getElementById('roleFilter')?.value||''
+  const sf = document.getElementById('statusFilter')?.value||''
+  let query = db.from('v_user_overview').select('*')
+  if (rf) query = query.eq('role', rf)
+  if (sf) query = query.eq('status', sf)
+  const { data: users, error } = await query.order('created_at',{ascending:false})
+  if (error) { showToast('Error loading users.','error'); return }
+  const filtered = (users||[]).filter(u => !q || u.full_name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q))
+  set('adm-total',      (users||[]).length)
+  set('adm-active',     (users||[]).filter(u => u.status==='active').length)
+  set('adm-restricted', (users||[]).filter(u => u.status!=='active').length)
+  set('adm-admins',     (users||[]).filter(u => u.role==='admin').length)
+  document.getElementById('usersTableBody').innerHTML = filtered.map(u => `
+    <tr>
+      <td><div style="font-weight:600">${u.full_name}</div><div style="font-size:11px;color:var(--text2)">${u.email}</div></td>
+      <td><span class="badge ${rb(u.role)}">${u.role}</span></td>
+      <td><span class="status-dot ${sd(u.status)}"></span>${u.status}</td>
+      <td style="color:var(--text2)">${u.created_at?.split('T')[0]}</td>
+      <td>${u.server_count??0}</td>
+      <td><div class="table-actions">
+        <button class="btn btn-outline btn-sm" onclick="openEditUser('${u.id}','${u.full_name}','${u.email}','${u.role}','${u.status}')">Edit</button>
+        ${u.status!=='banned'?`<button class="btn btn-danger btn-sm" onclick="quickStatus('${u.id}','banned')">Ban</button>`:`<button class="btn btn-primary btn-sm" onclick="quickStatus('${u.id}','active')">Unban</button>`}
+        ${u.status==='active'?`<button class="btn btn-warning btn-sm" onclick="quickStatus('${u.id}','suspended')">Suspend</button>`:''}
+        ${u.status==='suspended'?`<button class="btn btn-outline btn-sm" onclick="quickStatus('${u.id}','active')">Restore</button>`:''}
+        <button class="btn btn-danger btn-sm" onclick="confirmAction('Delete user?','All data will be permanently removed.',()=>deleteUser('${u.id}'))">Delete</button>
+      </div></td>
+    </tr>`).join('')
+}
+function openEditUser(id, name, email, role, status) {
+  document.getElementById('eu-id').value = id; document.getElementById('eu-name').value = name
+  document.getElementById('eu-email').value = email; document.getElementById('eu-role').value = role
+  document.getElementById('eu-status').value = status; document.getElementById('eu-pass').value = ''
+  openModal('editUser')
+}
+async function adminSaveUser() {
+  const id = document.getElementById('eu-id').value
+  const { error } = await db.from('profiles').update({ full_name:g('eu-name'), email:g('eu-email'), role:g('eu-role'), status:g('eu-status') }).eq('id', id)
+  if (error) { showToast('Error: ' + error.message,'error'); return }
+  await db.from('activity_logs').insert({ actor_id:S.user.id, user_id:id, type:'admin_action', description:`Admin updated profile → role:${g('eu-role')} status:${g('eu-status')}` })
+  closeModal('editUser'); await renderUsersTable(); await syncSecurity(); showToast('User updated.','success')
+}
+async function adminCreateUser() {
+  const name=g('cu-name'), email=g('cu-email'), pass=g('cu-pass'), role=g('cu-role')
+  const errEl=document.getElementById('cu-error'); errEl.classList.add('hidden')
+  if (!name||!email||!pass) { showError(errEl,'All fields required.'); return }
+  if (pass.length < 8)      { showError(errEl,'Password min. 8 chars.'); return }
+  const { data, error } = await db.auth.signUp({ email, password:pass, options:{data:{full_name:name}} })
+  if (error) { showError(errEl, error.message); return }
+  await db.from('profiles').update({ role }).eq('id', data.user.id)
+  logLocal('👤', `Admin created: ${email} (${role})`)
+  closeModal('createUser'); await renderUsersTable(); showToast('User created.','success')
+}
+async function quickStatus(id, status) {
+  const { error } = await db.from('profiles').update({ status }).eq('id', id)
+  if (error) { showToast('Error: '+error.message,'error'); return }
+  await db.from('activity_logs').insert({ actor_id:S.user.id, user_id:id, type: status==='banned'?'ban':'admin_action', description:`Status → ${status}` })
+  logLocal(status==='active'?'🟢':'🔴', `User ${id} → ${status}`)
+  await renderUsersTable(); await syncSecurity(); showToast('Status updated.','success')
+}
+async function deleteUser(id) {
+  const { error } = await db.from('profiles').delete().eq('id', id)
+  if (error) { showToast('Error: '+error.message,'error'); return }
+  logLocal('🗑️','Deleted user: '+id)
+  await renderUsersTable(); showToast('User deleted.','success')
+}
+function showContentTab(tab, el) {
+  ['pending','approved','rejected'].forEach(t => document.getElementById('ctab-'+t)?.classList.add('hidden'))
+  document.getElementById('ctab-'+tab)?.classList.remove('hidden')
+  document.querySelectorAll('.admin-subnav .admin-tab').forEach(t => t.classList.remove('active'))
+  if (el) el.classList.add('active')
+}
+async function moderateRow(btn, action) {
+  const row = btn.closest('tr'); const subId = row.dataset.id
+  if (subId) await db.from('content_submissions').update({ status:action, moderated_by:S.user.id, moderated_at:new Date().toISOString() }).eq('id', subId)
+  row.style.opacity = '0'; row.style.transition = 'opacity .3s'
+  setTimeout(() => row.remove(), 300)
+  showToast('Content ' + action + '.', action === 'approved' ? 'success' : 'error')
+}
+async function syncReports() {
+  const { data: m } = await db.from('v_platform_metrics').select('*').single()
+  if (m) {
+    set('rpt-rev','$'+Number(m.total_revenue||0).toFixed(0))
+    set('rpt-ord',m.paid_orders||0); set('rpt-srv',m.running_servers||0); set('rpt-usr',m.total_users||0)
+  }
+  const { data: logs } = await db.from('activity_logs').select('*').order('created_at',{ascending:false}).limit(50)
+  const ll = document.getElementById('activityLogList')
+  if (ll) ll.innerHTML = (logs||[]).length
+    ? logs.map(l => `<div class="log-entry"><span style="font-size:15px">📋</span><div style="flex:1;font-size:13px">${l.description}</div><span class="log-time">${l.created_at?.split('T')[1]?.substring(0,8)}</span></div>`).join('')
+    : `<div style="text-align:center;color:var(--text3);padding:24px;font-size:13px">No activity logged yet.</div>`
+  const { data: orders } = await db.from('orders').select('*,profiles(full_name),plans(name)').eq('status','paid').order('created_at',{ascending:false}).limit(100)
+  const ob = document.getElementById('rptOrdersBody')
+  if (ob) ob.innerHTML = (orders||[]).length
+    ? orders.map(o => `<tr><td style="font-family:monospace;font-size:11px">${o.order_number}</td><td>${o.profiles?.full_name||'—'}</td><td>${o.plans?.name||'—'}</td><td>$${Number(o.amount).toFixed(2)}</td></tr>`).join('')
+    : `<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No orders yet.</td></tr>`
+}
+async function exportCSV() {
+  const { data: orders } = await db.from('orders').select('order_number,profiles(full_name,email),plans(name),amount,created_at,status').order('created_at',{ascending:false})
+  const rows = ['Order ID,User,Email,Plan,Amount,Date,Status',...(orders||[]).map(o => `${o.order_number},${o.profiles?.full_name},${o.profiles?.email},${o.plans?.name},${o.amount},${o.created_at?.split('T')[0]},${o.status}`)]
+  const a = document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(rows.join('\n')); a.download='nimbusvps-report-'+td()+'.csv'; a.click()
+  showToast('CSV exported.','success')
+}
+async function syncSecurity() {
+  const { data: users } = await db.from('profiles').select('id,full_name,email,status').in('status',['banned','suspended'])
+  set('sec-banned',   (users||[]).filter(u=>u.status==='banned').length)
+  set('sec-suspended',(users||[]).filter(u=>u.status==='suspended').length)
+  const bt = document.getElementById('bannedTable')
+  if (bt) bt.innerHTML = (users||[]).length
+    ? users.map(u => `<tr><td><strong>${u.full_name}</strong></td><td>${u.email}</td><td><span class="badge ${u.status==='banned'?'badge-red':'badge-yellow'}">${u.status}</span></td><td style="color:var(--text2);font-size:12px">ToS violation</td><td>${td()}</td><td><button class="btn btn-outline btn-sm" onclick="quickStatus('${u.id}','active')">Restore</button></td></tr>`).join('')
+    : `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:28px">No restricted users.</td></tr>`
+}
+function openBanModal() { showToast('Use Ban button in User Management.') }
+async function syncBilling() {
+  const { data: summary } = await db.from('v_billing_summary').select('*')
+  const { data: m } = await db.from('v_platform_metrics').select('total_revenue').single()
+  const rev = Number(m?.total_revenue||0), totalOrds = (summary||[]).reduce((a,r)=>a+Number(r.total_orders||0),0)
+  set('bill-mrr','$'+rev.toFixed(0)); set('bill-count',totalOrds); set('bill-avg',totalOrds?'$'+Math.round(rev/totalOrds):'$0')
+  ;(summary||[]).forEach(row => {
+    const key = row.plan_name==='Starter'?'pc-starter':row.plan_name==='Professional'?'pc-pro':'pc-ent'
+    set(key, row.total_orders||0)
+  })
+  const { data: invs } = await db.from('invoices').select('*,profiles(full_name),plans(name)').order('created_at',{ascending:false}).limit(100)
+  const ib = document.getElementById('allInvoicesBody')
+  if (ib) ib.innerHTML = (invs||[]).length
+    ? invs.map(i => `<tr><td style="font-family:monospace;font-size:11px">${i.invoice_number}</td><td>${i.profiles?.full_name||'—'}</td><td>${i.plans?.name||'—'} VPS</td><td><strong>$${Number(i.amount).toFixed(2)}</strong></td><td>${i.created_at?.split('T')[0]}</td><td><span class="status-dot ${i.status==='paid'?'green':'yellow'}"></span>${i.status}</td><td><div class="table-actions"><button class="btn btn-ghost btn-sm" onclick="showToast('Refund flow — wire to Stripe.')">Refund</button><button class="btn btn-outline btn-sm" onclick="showToast('PDF — wire to storage.')">Download</button></div></td></tr>`).join('')
+    : `<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:28px">No invoices yet.</td></tr>`
+}
+function confirmAction(title, msg, fn) {
+  document.getElementById('confirm-title').textContent = title
+  document.getElementById('confirm-msg').textContent   = msg
+  document.getElementById('confirm-ok').onclick = () => { fn(); closeModal('confirm') }
+  openModal('confirm')
+}
+
+// Initialise
+applyTheme()
+syncThemeButtons()
+</script>
+</body>
+</html>
